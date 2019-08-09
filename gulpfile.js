@@ -11,9 +11,14 @@ function buildScss (){
             .pipe(browserSync.stream())
 }
 
+
+// и browserSync.stream() срабатывает и .pipe(browserSync.reload({stream: true}))
 function buildHtml (){
     return gulp.src('./develop/*.html')
     .pipe(gulp.dest('./build'))
+    // .pipe(browserSync.reload({
+    //     stream: true
+    //   }))
     .pipe(browserSync.stream())
 }
 
@@ -26,19 +31,25 @@ function cleanBuild(){
     // gulp.watch('./develop/scss/*.scss', buildScss);
 
 
-function watchScss(){
-   return gulp.watch('./develop/scss/*.scss', gulp.series(buildScss, browserSync.reload));
+// function watchScss(){
+//    return gulp.watch('./develop/scss/*.scss', gulp.series(buildScss, browserSync.reload));
+// }
+
+function watch(){
+    gulp.watch('./develop/*.html', buildHtml);
+    gulp.watch('./develop/scss/*.scss', buildScss);
 }
 
 gulp.task('scss', buildScss);
 gulp.task('buildHtml', buildHtml);
 gulp.task('clean', cleanBuild);
-gulp.task('watch', watchScss);
-
-gulp.task('production', gulp.series('clean', gulp.series(cleanBuild, buildHtml, buildScss, browser)));
+// gulp.task('watch', watchScss);
 
 
-// запускаем browser chrom и указываем папку, которую мониторить.
+
+
+// запускаем browser chrom и указываем папку, в которой отслеживаемый index.html.
+// но автоматической перезагрузки браузера не происходит.
 gulp.task('browser-sync', function(){
     browserSync.init({
         server: {
@@ -49,4 +60,6 @@ gulp.task('browser-sync', function(){
 
     });
 });
-                   
+
+gulp.task('production', gulp.series(cleanBuild, buildHtml, buildScss,
+                        gulp.parallel(watch, 'browser-sync')));                   
