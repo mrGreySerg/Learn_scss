@@ -1,8 +1,38 @@
-$a : 1px;
+// Такую вложенность не применять, так как теряется "блочность" вложенный блок нельзя вырвать из кода и перенести в другое место без его родителя.
+// .header{
+//     .header__first{
+//         background: red;
+//         width: 300px;
+//         height: 200px;
+//     }
+// }
+// ############ - first using - ############ //
+.header__first{
+            background: darken($color: red, $amount: 40);
+            width: 300px;
+            height: 200px;
+            transition: .3s all;
+            &:hover{
+                background: lighten($color: green, $amount: 20%);
+            }           
+        }
 
-.header{
-    border: $a solid blue;
-}sdddddddddddddddddddd
+// ############ - second using (@mixin - @include) - ############ //
+// $value... - если несколько параметров(через запятую)
+@mixin myFunc($value){
+    border: $value solid gray;
+    transition: 1s all;
+    width: 300px;
+    height: 100px;
+}
 
+.header__first{
+    @include myFunc(100px);
+}
 
-saf
+$param: 10px solid black;
+.header__second{
+    width: 100%;
+    height: 200px;
+    border: $param;
+}
